@@ -1,0 +1,18 @@
+server {
+    listen 80;
+    server_name Host;
+
+    location /.well-known/acme-challenge {
+        alias AcmeChallengePath;
+    }
+
+    location / { try_files $uri @proxy_to_app; }
+    location @proxy_to_app {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+        proxy_pass http://server;
+    }
+}
+
+# include HttpsConfigPath/domain.https;
